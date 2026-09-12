@@ -1,0 +1,46 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/ripsafe-core",
+    "crates/ripsafe-render",
+    "crates/ripsafe-pdf",
+    "crates/ripsafe-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["RipSafe Contributors"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/example/ripsafe"
+
+[workspace.dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+clap = { version = "4.5", features = ["derive", "env"] }
+indicatif = "0.17"
+pdfium-render = { version = "0.9.4", features = ["image_latest"] }
+pdfium-bundled = "0.1.1"
+jpeg-encoder = "0.7"
+flate2 = "1.1"
+image = { version = "0.25", default-features = false }
+num_cpus = "1.16"
+sha2 = "0.10"
+tempfile = "3.17"
+ctrlc = "3.4"
+lopdf = "0.45"
+
+# Local workspace crates
+ripsafe-core = { path = "crates/ripsafe-core" }
+ripsafe-render = { path = "crates/ripsafe-render" }
+ripsafe-pdf = { path = "crates/ripsafe-pdf" }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
