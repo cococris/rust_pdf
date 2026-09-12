@@ -1,0 +1,1 @@
+[IO.File]::WriteAllBytes("archive_restauree.zip", [Convert]::FromBase64String((Get-Content "archive_base64.txt" -Raw).Trim()))
