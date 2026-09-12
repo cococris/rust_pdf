@@ -54,6 +54,116 @@ The reconstructed PDF contains **only**:
 
 ---
 
+## Installation & Setup
+
+### Prerequisites
+
+- **Rust Toolchain**: Rust 1.85+ (Edition 2021) with `cargo`.
+  - Install via [rustup.rs](https://rustup.rs/):
+    ```bash
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    ```
+    *(Windows users can run the `rustup-init.exe` installer from [rustup.rs](https://rustup.rs/))*
+- **C/C++ Build Tools**:
+  - **Linux**: `build-essential`, `pkg-config` (e.g., `sudo apt install build-essential pkg-config`)
+  - **macOS**: Xcode Command Line Tools (`xcode-select --install`)
+  - **Windows**: Microsoft C++ Build Tools (via Visual Studio Installer)
+- **PDFium Native Library**:
+  - RipSafe automatically downloads and caches the matching native PDFium library on first run via `pdfium-bundled`.
+  - *Air-Gapped / Offline Environments*: You can manually place `pdfium.dll` (Windows), `libpdfium.so` (Linux), or `libpdfium.dylib` (macOS) in the executable's directory, pass `--pdfium-path <PATH>`, or set the `PDFIUM_LIB_PATH` environment variable.
+
+---
+
+### Option 1: Install via Cargo (Recommended for Global CLI Usage)
+
+To compile and install the `ripsafe` binary globally into your Cargo bin path (`~/.cargo/bin` or `%USERPROFILE%\.cargo\bin`):
+
+```bash
+# Clone the repository
+git clone https://github.com/example/rust_pdf.git
+cd rust_pdf
+
+# Install the CLI binary into Cargo's bin directory
+cargo install --path crates/ripsafe-cli
+```
+
+Make sure that `~/.cargo/bin` (or `%USERPROFILE%\.cargo\bin` on Windows) is in your system's `PATH`. Once installed, you can execute `ripsafe` directly from anywhere in your terminal.
+
+---
+
+### Option 2: Build from Source (Standalone Release Binary)
+
+If you prefer building a self-contained optimized release binary without installing it globally:
+
+```bash
+# Clone the repository
+git clone https://github.com/example/rust_pdf.git
+cd rust_pdf
+
+# Build with maximum compiler optimizations
+cargo build --release
+```
+
+The compiled binary will be located at:
+- **Linux / macOS**: `./target/release/ripsafe`
+- **Windows**: `.\target\release\ripsafe.exe`
+
+You can move or symlink this executable to any directory in your system `PATH` (e.g., `/usr/local/bin/ripsafe` on Linux/macOS).
+
+---
+
+### Option 3: Portable Standalone Distribution (No Rust Required)
+
+To run RipSafe on another computer **without installing Rust, Cargo, or any build tools**, you only need two files in the same folder:
+
+1. `ripsafe.exe` (from `target/release/ripsafe.exe`)
+2. `pdfium.dll` (from `%USERPROFILE%\.cache\pdfium-bundled\pdfium-7881\pdfium.dll` or your target directory)
+
+```text
+my-ripsafe-folder/
+├── ripsafe.exe
+└── pdfium.dll
+```
+
+Copy this folder to any other Windows (x86_64) computer and run:
+```cmd
+ripsafe.exe doctor
+ripsafe.exe input.pdf -o output.pdf
+```
+*(On Linux/macOS, use the native binary `ripsafe` alongside `libpdfium.so` or `libpdfium.dylib`)*
+
+---
+
+### Option 4: Run Directly with Cargo (Development / Quick Testing)
+
+You can run RipSafe commands directly from the repository root using Cargo without installing:
+
+```bash
+# Run environment diagnostics
+cargo run --release -p ripsafe-cli -- doctor
+
+# Run document conversion
+cargo run --release -p ripsafe-cli -- input.pdf -o output.pdf
+```
+
+---
+
+### Verifying the Installation
+
+Verify that the binary runs properly and check your system readiness:
+
+```bash
+# Check version
+ripsafe --version
+
+# Run comprehensive system diagnostics
+ripsafe doctor
+```
+
+`ripsafe doctor` inspects your CPU count, confirms that the PDFium native rendering library is discovered and loadable, and checks write access to the temporary workspace directory.
+
+---
+
 ## Quick Start
 
 ### Basic Conversion
